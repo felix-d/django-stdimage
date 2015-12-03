@@ -7,13 +7,17 @@ import traceback
 from multiprocessing import Pool, cpu_count
 
 import progressbar
+from django.apps import apps
+from django.core.files.storage import get_storage_class
 from django.core.management import BaseCommand
-from django.db.models import get_model
 
 from stdimage.utils import render_variations
 
-is_pypy = '__pypy__' in sys.builtin_module_names
 BAR = None
+
+
+def class_to_path(cls):
+    return '.'.join((cls.__module__, cls.__class__.__name__))
 
 
 class MemoryUsageWidget(progressbar.widgets.WidgetBase):
@@ -38,7 +42,7 @@ class Command(BaseCommand):
         replace = options.get('replace')
         for route in args:
             app_label, model_name, field_name = route.rsplit('.')
-            model_class = get_model(app_label, model_name)
+            model_class = apps.get_model(app_label, model_name)
             field = model_class._meta.get_field(field_name)
 
             queryset = model_class._default_manager \
@@ -47,13 +51,10 @@ class Command(BaseCommand):
             images = queryset.values_list(field_name, flat=True).iterator()
             count = queryset.count()
 
-            if is_pypy:  # pypy doesn't handle multiprocessing to well
-                self.render_linear(field, images, count, replace)
-            else:
-                self.render_in_parallel(field, images, count, replace)
+            self.render(field, images, count, replace)
 
     @staticmethod
-    def render_in_parallel(field, images, count, replace):
+    def render(field, images, count, replace):
         pool = Pool(
             initializer=init_progressbar,
             initargs=[count]
@@ -63,7 +64,7 @@ class Command(BaseCommand):
                 file_name=file_name,
                 variations=field.variations,
                 replace=replace,
-                storage=field.storage
+                storage=class_to_path(field.storage),
             )
             for file_name in images
         ]
@@ -71,22 +72,6 @@ class Command(BaseCommand):
         pool.apply(finish_progressbar)
         pool.close()
         pool.join()
-
-    @staticmethod
-    def render_linear(field, images, count, replace):
-        init_progressbar(count)
-        args_list = [
-            dict(
-                file_name=file_name,
-                variations=field.variations,
-                replace=replace,
-                storage=field.storage
-            )
-            for file_name in images
-        ]
-        for args in args_list:
-            render_variations(**args)
-        finish_progressbar()
 
 
 def init_progressbar(count):
@@ -107,6 +92,7 @@ def finish_progressbar():
 
 def render_field_variations(kwargs):
     try:
+        kwargs['storage'] = get_storage_class(kwargs['storage'])()
         render_variations(**kwargs)
         global BAR
         BAR += 1

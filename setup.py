@@ -1,24 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from setuptools import Command, find_packages, setup
-
-
-class PyTest(Command):
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        import sys
-        import subprocess
-
-        errno = subprocess.call([sys.executable, 'runtests.py'])
-        raise SystemExit(errno)
-
+from setuptools import find_packages, setup
 
 setup(
     name='django-stdimage',
@@ -39,13 +21,13 @@ setup(
         'Programming Language :: Python',
         'Topic :: Software Development',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.2',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: Implementation :: PyPy',
+        'Programming Language :: Python :: 3.5',
+        'Framework :: Django',
+        'Framework :: Django :: 1.8',
+        'Framework :: Django :: 1.9',
     ],
     packages=find_packages(exclude=[
         "*.tests", "*.tests.*", "tests.*", "tests", ".egg-info"
@@ -55,5 +37,4 @@ setup(
         'pillow>=2.5',
         'progressbar2>=3.0.0',
     ],
-    cmdclass={'test': PyTest},
 )

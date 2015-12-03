@@ -6,10 +6,11 @@ import os
 from io import BytesIO
 
 from django.core.files.base import ContentFile
-from django.core.files.storage import DefaultStorage
+from django.core.files.storage import default_storage
 from django.db.models import signals
-from django.db.models.fields.files import (ImageField, ImageFieldFile,
-                                           ImageFileDescriptor)
+from django.db.models.fields.files import (
+    ImageField, ImageFieldFile, ImageFileDescriptor
+)
 from PIL import Image, ImageOps
 
 from .validators import MinSizeValidator
@@ -58,7 +59,7 @@ class StdImageFieldFile(ImageFieldFile):
 
     @classmethod
     def render_variation(cls, file_name, variation, replace=False,
-                         storage=DefaultStorage()):
+                         storage=default_storage):
         """Render an image variation and saves it to the storage."""
         variation_name = cls.get_variation_name(file_name, variation['name'])
         if storage.exists(variation_name):

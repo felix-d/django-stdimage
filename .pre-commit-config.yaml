@@ -1,5 +1,5 @@
 -   repo: git@github.com:pre-commit/pre-commit-hooks
-    sha: 29bf11d13689a0a9a895c41eb3591c7e942d377d
+    sha: e306ff3b7d0d9a6fc7d128ef9ca2e0b6e6e76e8f
     hooks:
     -   id: trailing-whitespace
     -   id: end-of-file-fixer
@@ -13,13 +13,13 @@
         args:
         - requirements-dev.txt
 -   repo: git://github.com/FalconSocial/pre-commit-mirrors-pep257
-    sha: 67c970e89857fdcebcd59ace94950a3331985a3b
+    sha: ebb1b1bb080b0c960bcf37cf81d09185cec4fc6d
     hooks:
     -   id: pep257
         args:
         - --explain
         - --ignore=D100,D101,D102,D103,D104,D105,D203
 -   repo: git://github.com/FalconSocial/pre-commit-python-sorter
-    sha: 934072fb29303aaa64bead610be042049e9db488
+    sha: ec01d99f48a0dabb2ebbb2675139e2cc0fe2aa93
     hooks:
     -   id: python-import-sorter

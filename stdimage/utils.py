@@ -4,7 +4,7 @@ from __future__ import absolute_import, unicode_literals
 import os
 import uuid
 
-from django.core.files.storage import DefaultStorage
+from django.core.files.storage import default_storage
 from django.utils.text import slugify
 
 from .models import StdImageField, StdImageFieldFile
@@ -89,7 +89,7 @@ def pre_save_delete_callback(sender, instance, **kwargs):
 
 
 def render_variations(file_name, variations, replace=False,
-                      storage=DefaultStorage()):
+                      storage=default_storage):
     """Render all variations for a given field."""
     for key, variation in variations.items():
         StdImageFieldFile.render_variation(
