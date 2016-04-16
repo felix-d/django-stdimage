@@ -106,7 +106,7 @@ class StdImageFieldFile(ImageFieldFile):
                         )
 
                 with BytesIO() as file_buffer:
-                    img.save(file_buffer, file_format)
+                    img.save(file_buffer, file_format, subsampling=0, quality=100)
                     f = ContentFile(file_buffer.getvalue())
                     storage.save(variation_name, f)
         return variation_name
